@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>jQuery Random Number Animation</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<style>
+			h1{ font: bold 40px 'Helvetica Neue', Helvetica; color: #E11926; }
+			.itemRow{ display: block; clear: both; }
+			.itemRow strong{ font: bold 40px 'Helvetica Neue', Helvetica; color:#333; display: inline-block; margin:0 10px; }
+			.numberTicker{ font: bold 80px 'Helvetica Neue', Helvetica; color: #fff; width:650px; text-align: right; margin: 10px 0; display: inline-block; }
+			.rna_contain,
+			.rna_comma{ display: inline-block; margin: 0px 2px; background-color:#222; padding: 0px 3px; width: 45px; text-align: center; position: relative; }
+			.rna_flip{ position: absolute; display: inline-block; left: 0px; width: 100%; height: 50%; background-color: #fff; overflow: hidden; text-indent: -8000px; opacity: 0.3; border-top: 1px solid #000; }
+			.rna_contain,
+			.rna_comma{
+				background-image: linear-gradient(bottom, rgb(18,18,18) 35%, rgb(112,112,112) 100%);
+				background-image: -o-linear-gradient(bottom, rgb(18,18,18) 35%, rgb(112,112,112) 100%);
+				background-image: -moz-linear-gradient(bottom, rgb(18,18,18) 35%, rgb(112,112,112) 100%);
+				background-image: -webkit-linear-gradient(bottom, rgb(18,18,18) 35%, rgb(112,112,112) 100%);
+				background-image: -ms-linear-gradient(bottom, rgb(18,18,18) 35%, rgb(112,112,112) 100%);
+				background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.35, rgb(18,18,18)), color-stop(1, rgb(112,112,112)));
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Number of Grainger Digital Transactions Per Year</h1>
+		<div class="itemRow">
+			<div class="numberTicker" id="haha"></div>
+			<strong>/ DAY</strong>
+		</div>
+		<div class="itemRow">
+			<div class="numberTicker" id="hoho"></div>
+			<strong>/ WEEK</strong>
+		</div>
+		<div class="itemRow">
+			<div class="numberTicker" id="hehe"></div>
+			<strong>/ MONTH</strong>
+		</div>
+		<div class="itemRow">
+			<div class="numberTicker" id="wooo"></div>
+			<strong>/ YEAR</strong>
+		</div>
+		<script>
+			$.fn.numberTicker = function(params){
+				var us, increment, x;
+				us = $(this);
+				x = params.end.toString().split('');
+
+				for (var i = 0; i < x.length; i++) {
+					var s = $('<span/>').addClass('rna_contain').prependTo(us);
+					var f = $('<span>&nbsp;</span>').addClass('rna_flip').appendTo(s);
+					var n = $('<span>').text('0').addClass('rna_number').appendTo(s);
+					if ( i % 2 === 0 ){
+						f.css({bottom:0});
+					}else{
+						f.css({top:0});
+					}
+					if ( i % 3 === 2 && i != (x.length-1) ){
+						var c = $('<span/>').addClass('rna_comma').text(',').insertBefore(s);
+						$('<span>&nbsp;</span>').addClass('rna_flip').appendTo(c).css({bottom:0, opacity:0.2});
+					}
+				};
+
+				this.start = function(){
+					increment = Math.round(Number(params.end) / (Number(params.time)/params.fudge));
+					var interval = setInterval(function(){
+						var x = (Number(us.find('.rna_number').text().replace(/,/g,''))+increment).toString().split('');
+						for (var i = 0; i < x.length; i++ ){
+							var a = us.children('.rna_contain').eq(i)
+							a.find('.rna_flip').toggle();
+							a.find('.rna_number').text(x[i]);
+						}
+					},params.interval);
+
+					var timer = setTimeout(function(){
+						clearInterval(interval);
+						var z = params.end.toString().split('');
+						for (var i = 0; i < z.length; i++ ){
+							us.children('.rna_contain').eq(i).find('.rna_number').text(z[i]);
+							us.find('.rna_flip').show().css({ bottom:0, top:'auto', opacity:0.2});
+						}
+					},params.time);
+				}
+
+				return this;
+			}
+			$('#haha').numberTicker({interval:80, fudge:3, end:2390519, time:500}).start();
+			$('#hoho').numberTicker({interval:50, fudge:8, end:16733633, time:1000}).start();
+			$('#hehe').numberTicker({interval:20, fudge:8.5, end:66934332, time:1500}).start();
+			$('#wooo').numberTicker({interval:20, fudge:10, end:872539752, time:2000}).start();
+
+		</script>
+	</body>
+</html>
